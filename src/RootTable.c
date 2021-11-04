@@ -24,7 +24,7 @@ Begin:
         push int to linked list
     while not at end of list
        get next value from list
-       write value to list with 2, 3, 4 roots
+       write value to file with 2, 3, 4 roots
     close file pointers
 End
 */
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {  // Begin:
     while (list.head != NULL) {
         tempint = pop(&list);  // get next value from list
 
-        // write value to list with 2, 3, 4 roots
+        // write value to file with 2, 3, 4 roots
         fprintf(data_out, "%-5d\t%-5.3f\t\t%-5.3f\t\t%-5.3f\n", tempint,
                 pow(tempint, 1.0 / 2.0), pow(tempint, 1.0 / 3.0),
                 pow(tempint, 1.0 / 4.0));

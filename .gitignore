@@ -1,0 +1,9 @@
+*
+!/**/
+!*.*
+
+.vscode
+target
+*.zip
+.DS_Store
+*.swp

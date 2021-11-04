@@ -3,7 +3,7 @@
 # Compiler flags
 #
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -lm
 
 #
 # Project files
@@ -11,6 +11,10 @@ CFLAGS = -Wall -Werror -Wextra
 SRCDIR = src
 SRCS = $(wildcard $(SRCDIR)/*.c)
 EXE  = RootTable
+ifeq ($(OS),Windows_NT) 
+	EXE = RootTable.exe 
+endif
+
 
 #
 # Debug build settings
@@ -24,7 +28,10 @@ DBGCFLAGS = -g -O0 -DDEBUG
 # Release build settings
 #
 RELDIR = target/release
-RELEXE = $(EXE)
+ifeq ($(OS),Windows_NT)
+	RELDIR = .
+endif
+RELEXE = $(RELDIR)/$(EXE)
 RELOBJS = $(patsubst $(SRCDIR)/%.c, $(RELDIR)/%.o, $(SRCS))
 RELCFLAGS = -O3 -DNDEBUG
 
@@ -43,7 +50,7 @@ debug: $(DBGEXE)
 $(DBGEXE): $(DBGOBJS) | $(DBGDIR)
 	$(CC) $(CFLAGS) $(DBGCFLAGS) $^ -o $@
 
-$(DBGDIR)/%.o: $(SRCDIR)/%.c | $(DBGDIR)
+$(DBGDIR)/%.o: $(SRCDIR)/%.c $(SRCDIR)/myLinkedList.h | $(DBGDIR)
 	$(CC) $(CFLAGS) $(DBGCFLAGS) -c $< -o $@
 
 #
@@ -54,18 +61,18 @@ release: $(RELEXE)
 $(RELEXE): $(RELOBJS) | $(RELDIR)
 	$(CC) $(CFLAGS) $(RELCFLAGS) $^ -o $@
 
-$(RELDIR)/%.o: $(SRCDIR)/%.c | $(RELDIR)
+$(RELDIR)/%.o: $(SRCDIR)/%.c $(SRCDIR)/myLinkedList.h | $(RELDIR)
 	$(CC) $(CFLAGS) $(RELCFLAGS) -c $< -o $@
 
 #
 # Other rules
 #
 clean:
-	rm -f $(RELEXE) $(RELOBJS) $(DBGEXE) $(DBGOBJS)
+	rm -f $(RELEXE) $(RELOBJS) $(DBGEXE) $(DBGOBJS) $(wildcard *.dsym)
 
 remake: clean all
 
 $(RELDIR) $(DBGDIR):
-	@mkdir -p $@
+	@"mkdir" -p "$@"
 
 -include $(OBJ:.o=.d)
